@@ -42,10 +42,6 @@ using namespace std;
 
 #include "config.h"
  
-static const char *domain;
-static const char *accessToken;
-static const char *accounts;
-
 class TickListener : public ExceptionListener,
 		     public MessageListener,
   		     public Runnable {
@@ -58,25 +54,6 @@ private:
   FILE *ticklog_f;
 
   string brokerURI;
-
-  char *getenv_checked (const char *e)
-  {
-    char *v = getenv (e);
-    if (!v)
-      {
-	fprintf (stderr, "ERROR: environment variable '%s' not set.\n", e);
-	exit (1);
-      }
-    
-    return v;
-  }
-
-  void config()
-  {
-    domain = getenv_checked ("OANDA_STREAM_DOMAIN");
-    accessToken = getenv_checked ("OANDA_ACCESS_TOKEN");
-    accounts = getenv_checked ("OANDA_ACCOUNT_ID");
-  }
 
 public:
   TickListener () :
