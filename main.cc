@@ -95,18 +95,21 @@ public:
   {
     json_object *jobj = json_tokener_parse (dynamic_cast<const TextMessage*>(msg)->getText().c_str());
 
-    jobj = json_object_object_get(jobj, "tick");
-    if (jobj != NULL)
+    if (json_object_object_get_ex (jobj, "tick", &jobj))
       {
-	json_object *bid = json_object_object_get(jobj, "bid");
-	json_object *ask = json_object_object_get(jobj, "ask");
-	json_object *instrument = json_object_object_get(jobj, "instrument");
-	json_object *time = json_object_object_get(jobj, "time");
-	fprintf (ticklog_f, "%s,%s,%s,%s", 
-		 json_object_get_string (instrument),
-		 json_object_get_string (time),
-		 json_object_get_string (bid),
-		 json_object_get_string (ask));
+	json_object *bid, *ask, *instrument, *time;
+	if (json_object_object_get_ex (jobj, "bid", &bid) &&
+	    json_object_object_get_ex (jobj, "ask", &ask) &&
+	    json_object_object_get_ex (jobj, "instrument", &instrument) &&
+	    json_object_object_get_ex (jobj, "time", &time))
+	  fprintf (ticklog_f, "%s,%s,%s,%s", 
+		   json_object_get_string (instrument),
+		   json_object_get_string (time),
+		   json_object_get_string (bid),
+		   json_object_get_string (ask));
+	else
+	  std::cerr << "ERROR: unrecognized json: " 
+		    << dynamic_cast<const TextMessage*>(msg)->getText() << std::endl;
       }
   }
 
@@ -119,7 +122,8 @@ public:
 
 int main()
 {
-  printf ("Program started by User %d", getuid());
+  std::cout << "rec-ticks, Copyright (C) 2014, 2016  Anthony Green" << std::endl;
+  printf ("Program started by User %d\n", getuid());
 
   activemq::library::ActiveMQCPP::initializeLibrary();
 
@@ -128,7 +132,7 @@ int main()
   listener_thread.start();
   listener_thread.join();
 
-  printf ("Program ended");
+  printf ("Program ended\n");
 
   return 0;
 }
