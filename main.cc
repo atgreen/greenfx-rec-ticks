@@ -55,6 +55,7 @@ private:
   Connection *connection;
   Destination *destination;
   MessageConsumer *consumer;
+  FILE *ticklog_f;
 
   string brokerURI;
 
@@ -80,6 +81,7 @@ private:
 public:
   TickListener () :
     brokerURI("tcp://broker-amq-tcp:61616?wireFormat=openwire") {
+    ticklog_f = fopen ("ticklog.csv", "a+");
   }
 
   virtual void run () {
@@ -121,10 +123,13 @@ public:
       {
 	json_object *bid = json_object_object_get(jobj, "bid");
 	json_object *ask = json_object_object_get(jobj, "ask");
-	const char **tab1 = (const char **) malloc(sizeof (char *) * 2);
-	tab1[0] = json_object_get_string(bid);
-	tab1[1] = json_object_get_string(ask);
-	printf (dynamic_cast<const TextMessage*>(msg)->getText().c_str());
+	json_object *instrument = json_object_object_get(jobj, "instrument");
+	json_object *time = json_object_object_get(jobj, "time");
+	fprintf (ticklog_f, "%s,%s,%s,%s", 
+		 json_object_get_string (instrument),
+		 json_object_get_string (time),
+		 json_object_get_string (bid),
+		 json_object_get_string (ask));
       }
   }
 
