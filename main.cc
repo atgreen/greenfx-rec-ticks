@@ -58,7 +58,7 @@ private:
 public:
   TickListener () :
     brokerURI("tcp://broker-amq-tcp:61616?wireFormat=openwire") {
-    ticklog_f = fopen ("ticklog.csv", "a+");
+    ticklog_f = fopen ("/var/rec-ticks/ticklog.csv", "a+");
   }
 
   virtual void run () {
