@@ -58,7 +58,7 @@ private:
 public:
   TickListener () :
     brokerURI("tcp://broker-amq-tcp:61616?wireFormat=openwire") {
-    ticklog_f = fopen ("/var/rec-ticks/ticklog.csv", "a+");
+    ticklog_f = fopen ("/home/greenfx/ticklog.csv", "a+");
   }
 
   virtual void run () {
@@ -94,6 +94,7 @@ public:
   virtual void onMessage(const Message *msg)
   {
     json_object *jobj = json_tokener_parse (dynamic_cast<const TextMessage*>(msg)->getText().c_str());
+    json_object *tick;
 
     if (json_object_object_get_ex (jobj, "tick", &jobj))
       {
@@ -102,15 +103,27 @@ public:
 	    json_object_object_get_ex (jobj, "ask", &ask) &&
 	    json_object_object_get_ex (jobj, "instrument", &instrument) &&
 	    json_object_object_get_ex (jobj, "time", &time))
-	  fprintf (ticklog_f, "%s,%s,%s,%s", 
-		   json_object_get_string (instrument),
-		   json_object_get_string (time),
-		   json_object_get_string (bid),
-		   json_object_get_string (ask));
+	  {
+	    fprintf (ticklog_f, "%s,%s,%s,%s", 
+		     json_object_get_string (instrument),
+		     json_object_get_string (time),
+		     json_object_get_string (bid),
+		     json_object_get_string (ask));
+	    json_object_put (bid);
+	    json_object_put (ask);
+	    json_object_put (instrument);
+	    json_object_put (time);
+	  }
 	else
-	  std::cerr << "ERROR: unrecognized json: " 
-		    << dynamic_cast<const TextMessage*>(msg)->getText() << std::endl;
+	  {
+	    // We are also leaking memory here - but this should never happen.
+	    std::cerr << "ERROR: unrecognized json: " 
+		      << dynamic_cast<const TextMessage*>(msg)->getText() << std::endl;
+	  }
+	json_object_put (tick);
       }
+
+    json_object_put (jobj);
   }
 
   virtual void onException(const CMSException& ex)

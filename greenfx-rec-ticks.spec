@@ -21,6 +21,13 @@ autoreconf
 %configure
 make %{?_smp_mflags}
 
+%pre
+getent group greenfx >/dev/null || groupadd -r greenfx
+getent passwd greenfx >/dev/null || \
+    useradd -r -g greenfx -d /home/greenfx -s /sbin/nologin \
+    -c "GreenFX Service Account" greenfx
+exit 0
+
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
