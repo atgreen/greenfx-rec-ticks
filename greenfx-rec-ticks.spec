@@ -40,7 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%attr(0755,greenfx,greenfx) %dir /var/lib/greenfx/rec-ticks
+%attr(0777,greenfx,greenfx) %dir /var/lib/greenfx/rec-ticks
 
 %changelog
 * Thu Sep 29 2016 Anthony Green <anthony@atgreen.org> 1.0-1
