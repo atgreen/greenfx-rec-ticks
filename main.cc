@@ -86,7 +86,7 @@ public:
       consumer = session->createConsumer(destination);
       consumer->setMessageListener(this);
 
-      printf ("Listening...\n");
+      std::cout << "Listening..." << std::endl;
 
       // Sleep forever
       while (true)
@@ -102,6 +102,8 @@ public:
 
   virtual void onMessage(const Message *msg)
   {
+    std::cout << "onMessage" << std::endl;
+
     json_object *jobj = json_tokener_parse (dynamic_cast<const TextMessage*>(msg)->getText().c_str());
     json_object *tick;
 
@@ -145,7 +147,7 @@ public:
 int main()
 {
   std::cout << "rec-ticks, Copyright (C) 2014, 2016  Anthony Green" << std::endl;
-  printf ("Program started by User %d\n", getuid());
+  std::cout << "Program started by User " << getuid() << std::endl;
 
   activemq::library::ActiveMQCPP::initializeLibrary();
 
@@ -154,7 +156,7 @@ int main()
   listener_thread.start();
   listener_thread.join();
 
-  printf ("Program ended\n");
+  std::cout << "Program ended." << std::endl;
 
   return 0;
 }
