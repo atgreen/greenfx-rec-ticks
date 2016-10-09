@@ -22,6 +22,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #include <decaf/lang/Thread.h>
 #include <decaf/lang/Runnable.h>
@@ -59,6 +60,12 @@ public:
   TickListener () :
     brokerURI("tcp://broker-amq-tcp:61616?wireFormat=openwire") {
     ticklog_f = fopen ("/var/lib/greenfx/rec-ticks/ticklog.csv", "a+");
+    if (ticklog_f == NULL)
+      {
+	fprintf (stderr, "Error opening /var/lib/greenfx/rec-ticks/ticklog.csv: %s\n",
+		 strerror (errno));
+	exit (1);
+      }
   }
 
   virtual void run () {
@@ -78,6 +85,8 @@ public:
       
       consumer = session->createConsumer(destination);
       consumer->setMessageListener(this);
+
+      printf ("Listening...\n");
 
       // Sleep forever
       while (true)
