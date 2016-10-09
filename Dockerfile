@@ -8,5 +8,4 @@ RUN yum install -y /tmp/greenfx-rec-ticks-1.0-0.1.x86_64.rpm && \
     yum clean all && \
     rm /tmp/*.rpm
 
-USER greenfx
 CMD su - greenfx -c rec-ticks
