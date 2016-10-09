@@ -20,6 +20,6 @@ greenfx-rec-ticks-1.0.tar.gz
 install-sh
 missing
 stamp-h1
-ticks-oanda
-ticks-oanda.o
+rec-ticks
+rec_ticks-main.o
 
