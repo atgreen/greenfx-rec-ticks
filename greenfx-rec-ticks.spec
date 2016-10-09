@@ -26,6 +26,7 @@ getent group greenfx >/dev/null || groupadd -r greenfx
 getent passwd greenfx >/dev/null || \
     useradd -r -m -g greenfx -d /var/lib/greenfx -s /sbin/nologin \
     -c "GreenFX Service Account" greenfx
+chmod 755 /var/lib/greenfx
 exit 0
 
 %install
