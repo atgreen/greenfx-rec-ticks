@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -102,18 +103,24 @@ public:
 
     if (json_object_object_get_ex (jobj, "tick", &jobj))
       {
-	json_object *bid, *ask, *instrument, *time;
+	json_object *bid, *ask, *instrument, *ttime;
 	if (json_object_object_get_ex (jobj, "bid", &bid) &&
 	    json_object_object_get_ex (jobj, "ask", &ask) &&
 	    json_object_object_get_ex (jobj, "instrument", &instrument) &&
-	    json_object_object_get_ex (jobj, "time", &time))
+	    json_object_object_get_ex (jobj, "time", &ttime))
 	  {
 	    string instrument_s = json_object_get_string (instrument);
 	    FILE *f = filemap[instrument_s];
 	    if (! f)
 	      {
+		char buf[512];
+		struct tm *utc;
+		time_t t;
+		t = time (NULL);
+		utc = gmtime (&t);
+		strftime (buf, 512, "%Y%m%d-%H%M%S", utc);
 		string fname = 
-		  "/var/lib/greenfx/rec-ticks/" + instrument_s + ".csv";
+		  "/var/lib/greenfx/rec-ticks/" + instrument_s + "-" + buf + ".csv";
 		f = filemap[instrument_s] = fopen (fname.c_str(), "a+");
 		if (! f)
 		  {
@@ -125,13 +132,13 @@ public:
 	      }		
 	    
 	    fprintf (f, "%s,%s,%s\n", 
-		     json_object_get_string (time),
+		     json_object_get_string (ttime),
 		     json_object_get_string (bid),
 		     json_object_get_string (ask));
 	    json_object_put (bid);
 	    json_object_put (ask);
 	    json_object_put (instrument);
-	    json_object_put (time);
+	    json_object_put (ttime);
 	  }
 	else
 	  {
