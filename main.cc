@@ -16,6 +16,7 @@
 
 #include <cstdlib>
 #include <memory>
+#include <unordered_map>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,20 +53,14 @@ private:
   Connection *connection;
   Destination *destination;
   MessageConsumer *consumer;
-  FILE *ticklog_f;
 
   string brokerURI;
+
+  unordered_map <string, FILE *> filemap;
 
 public:
   TickListener () :
     brokerURI("tcp://broker-amq-tcp:61616?wireFormat=openwire") {
-    ticklog_f = fopen ("/var/lib/greenfx/rec-ticks/ticklog.csv", "a+");
-    if (ticklog_f == NULL)
-      {
-	fprintf (stderr, "Error opening /var/lib/greenfx/rec-ticks/ticklog.csv: %s\n",
-		 strerror (errno));
-	exit (1);
-      }
   }
 
   virtual void run () {
@@ -102,8 +97,6 @@ public:
 
   virtual void onMessage(const Message *msg)
   {
-    std::cout << "onMessage" << std::endl;
-
     json_object *jobj = json_tokener_parse (dynamic_cast<const TextMessage*>(msg)->getText().c_str());
     json_object *tick;
 
@@ -115,8 +108,20 @@ public:
 	    json_object_object_get_ex (jobj, "instrument", &instrument) &&
 	    json_object_object_get_ex (jobj, "time", &time))
 	  {
-	    fprintf (ticklog_f, "%s,%s,%s,%s", 
-		     json_object_get_string (instrument),
+	    string instrument_s = json_object_get_string (instrument);
+	    FILE *f = filemap[instrument_s];
+	    if (! f)
+	      {
+		string fname = 
+		  "/var/lib/greenfx/rec-ticks/" + instrument_s + ".csv";
+		f = filemap[instrument_s] = fopen (fname.c_str(), "a+");
+		fprintf (stderr, "Error opening %s: %s\n",
+			 fname.c_str(),
+			 strerror (errno));
+		exit (1);
+	      }		
+	    
+	    fprintf (f, "%s,%s,%s\n", 
 		     json_object_get_string (time),
 		     json_object_get_string (bid),
 		     json_object_get_string (ask));
