@@ -115,10 +115,13 @@ public:
 		string fname = 
 		  "/var/lib/greenfx/rec-ticks/" + instrument_s + ".csv";
 		f = filemap[instrument_s] = fopen (fname.c_str(), "a+");
-		fprintf (stderr, "Error opening %s: %s\n",
-			 fname.c_str(),
-			 strerror (errno));
-		exit (1);
+		if (! f)
+		  {
+		    fprintf (stderr, "Error opening %s: %s\n",
+			     fname.c_str(),
+			     strerror (errno));
+		    exit (1);
+		  }
 	      }		
 	    
 	    fprintf (f, "%s,%s,%s\n", 
