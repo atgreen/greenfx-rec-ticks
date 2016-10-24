@@ -8,5 +8,7 @@ RUN yum install -y /tmp/greenfx-tickq-to-archive-1.0-0.1.x86_64.rpm && \
     yum clean all && \
     rm /tmp/*.rpm
 
-USER greenfx
+# Run as the default openshift assigned user until we figure out
+# persistant storage settings.
+# USER greenfx
 CMD tickq-to-archive
