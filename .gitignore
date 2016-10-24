@@ -16,10 +16,10 @@ config.log
 config.status
 configure
 depcomp
-greenfx-rec-ticks-1.0.tar.gz
+greenfx-tickq-to-archive-1.0.tar.gz
 install-sh
 missing
 stamp-h1
-rec-ticks
-rec_ticks-main.o
+tickq-to-archive
+tickq_to_archive-main.o
 

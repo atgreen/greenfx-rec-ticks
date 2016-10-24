@@ -13,6 +13,6 @@ CMD cd /opt && autoreconf --install && \
     ./configure && \
     make dist && \
     chown -R root.root * && \
-    mv greenfx-rec-ticks-1.0.tar.gz /root/rpmbuild/SOURCES && \
-    rpmbuild -ba greenfx-rec-ticks.spec && \
+    mv greenfx-tickq-to-archive-1.0.tar.gz /root/rpmbuild/SOURCES && \
+    rpmbuild -ba greenfx-tickq-to-archive.spec && \
     mv /root/rpmbuild/RPMS/x86_64/*.rpm /opt

@@ -120,7 +120,7 @@ public:
 		utc = gmtime (&t);
 		strftime (buf, 512, "%Y%m%d-%H%M%S", utc);
 		string fname = 
-		  "/var/lib/greenfx/rec-ticks/" + instrument_s + "-" + buf + ".csv";
+		  "/var/lib/greenfx/tickq-to-archive/" + instrument_s + "-" + buf + ".csv";
 		f = filemap[instrument_s] = fopen (fname.c_str(), "a+");
 		if (! f)
 		  {
@@ -161,7 +161,7 @@ public:
 
 int main()
 {
-  std::cout << "rec-ticks, Copyright (C) 2014, 2016  Anthony Green" << std::endl;
+  std::cout << "tickq-to-archive, Copyright (C) 2014, 2016  Anthony Green" << std::endl;
   std::cout << "Program started by User " << getuid() << std::endl;
 
   activemq::library::ActiveMQCPP::initializeLibrary();

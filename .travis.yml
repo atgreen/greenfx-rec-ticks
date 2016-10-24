@@ -6,9 +6,9 @@ services:
   - docker
 
 before_install:
-  - docker build -f Dockerfile.builder -t atgreen/greenfx-rec-ticks-builder .
-  - docker run -t -v `pwd`:/opt atgreen/greenfx-rec-ticks-builder
-  - docker build -f Dockerfile -t atgreen/greenfx-rec-ticks .
+  - docker build -f Dockerfile.builder -t atgreen/greenfx-tickq-to-archive-builder .
+  - docker run -t -v `pwd`:/opt atgreen/greenfx-tickq-to-archive-builder
+  - docker build -f Dockerfile -t atgreen/greenfx-tickq-to-archive .
 
 script:
 - 
@@ -16,7 +16,7 @@ script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
       docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-      docker push atgreen/greenfx-rec-ticks;
+      docker push atgreen/greenfx-tickq-to-archive;
     fi
   - echo All done.
 

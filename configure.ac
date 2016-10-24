@@ -1,4 +1,4 @@
-AC_INIT([greenfx-rec-ticks], [1.0], [anthony@atgreen.org])
+AC_INIT([greenfx-tickq-to-archive], [1.0], [anthony@atgreen.org])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 PKG_PROG_PKG_CONFIG([0.25])

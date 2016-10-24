@@ -1,6 +1,10 @@
-bin_PROGRAMS = rec-ticks
+bin_PROGRAMS = tickq-to-archive
 
-rec_ticks_CPPFLAGS = $(AMQ_CFLAGS) -std=c++11
+# We ship the git tree around because it includes version info, and is
+# pretty small.
+EXTRA_DIST = .git COPYING3 README.md
 
-rec_ticks_LDADD = -lcurl $(AMQ_LIBS) -ljson-c
-rec_ticks_SOURCES = main.cc
+tickq_to_archive_CPPFLAGS = $(AMQ_CFLAGS) -std=c++11
+
+tickq_to_archive_LDADD = -lcurl $(AMQ_LIBS) -ljson-c
+tickq_to_archive_SOURCES = main.cc
